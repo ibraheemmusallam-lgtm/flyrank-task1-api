@@ -23,8 +23,15 @@ From the project directory in Git Bash:
 ```bash
 py -3.11 -m venv .venv
 source .venv/Scripts/activate
+```
+
+Install FastAPI and its standard dependencies, including the Uvicorn server:
+
+```bash
 python -m pip install -r requirements.txt
 ```
+
+The `requirements.txt` file installs `fastapi[standard]`.
 
 ## Running the API
 
