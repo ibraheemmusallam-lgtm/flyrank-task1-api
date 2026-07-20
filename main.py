@@ -9,7 +9,13 @@ Returning a Python dictionary makes FastAPI send JSON.
 GET / describes the API.
 GET /health confirms the server is alive.
 """
-app = FastAPI()
+app = FastAPI(
+    # metadata
+    title="Task API",
+    description="An in-memory CRUD API for managing to-do tasks.",
+    version="1.0",
+)
+
 tasks = [
     {"id": 1, "title": "Learn FastAPI", "done": False},
     {"id": 2, "title": "Build a CRUD API", "done": False},
@@ -18,6 +24,7 @@ tasks = [
 
 @app.get("/")
 def read_root():
+    """Return the API name, version, and available resource."""
     return {
         "name": "Task API",
         "version": "1.0",
@@ -27,6 +34,7 @@ def read_root():
 
 @app.get("/health")
 def health_check():
+    """Confirm that the API server is running."""
     return {
         "status": "ok",
     }
@@ -41,10 +49,12 @@ An unknown ID deliberately returns 404, not an empty 200.
 
 @app.get("/tasks")
 def list_tasks():
+    """Return every task currently stored in memory."""
     return tasks
 
 @app.get("/tasks/{task_id}")
 def get_task(task_id: int):
+    """Return one task by ID or a 404 error if it does not exist."""
     for task in tasks:
         if task["id"] == task_id:
             return task
@@ -56,6 +66,7 @@ def get_task(task_id: int):
 
 @app.post("/tasks", status_code=201) # endpoint
 def create_task(task_data: dict): # receive request body which FastAPI parses the JSON to a Python dictionary and passes into task_data
+    """Create a new task with a generated ID and unfinished status."""
     title = task_data.get("title") # extract "title" key from task_data
 
     if not isinstance(title, str) or not title.strip(): # if title isn't a string or empty string, return 400 error, we use not to reverse them from false to true 
@@ -86,6 +97,7 @@ URL: selects /tasks.
 
 @app.put("/tasks/{task_id}") #update endpoint
 def update_task(task_id: int, task_data: dict): # task_id comes from the URL & task_data comes from the JSON request body. 
+    """Update the title and/or completion status of an existing task."""
     task = next( #next(...) takes the first matching result and stops searching. This is lazy: it does not need to build another list.
         (task for task in tasks if task["id"] == task_id),
         None, # None is the default value if no task is found
@@ -139,6 +151,7 @@ def update_task(task_id: int, task_data: dict): # task_id comes from the URL & t
 
 @app.delete("/tasks/{task_id}", status_code=204)
 def delete_task(task_id: int):
+    """Delete an existing task and return an empty 204 response."""
     task = next(
         (task for task in tasks if task["id"] == task_id),
         None,
