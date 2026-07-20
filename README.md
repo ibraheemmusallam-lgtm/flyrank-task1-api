@@ -113,7 +113,8 @@ Missing, empty, or invalid task fields return `400 Bad Request` with a JSON erro
 
 The complete CRUD cycle can be tested using Swagger UI at `/docs`.
 
-![Task API endpoints in Swagger UI](docs/swagger-ui.png)
+<img width="1881" height="1078" alt="image" src="https://github.com/user-attachments/assets/1cee3cbd-6cc0-4777-958e-a690f4dc7e86" />
+
 
 ## In-memory storage
 
