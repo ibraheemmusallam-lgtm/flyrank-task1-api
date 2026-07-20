@@ -52,3 +52,33 @@ def get_task(task_id: int):
         status_code=404,
         content={"error": f"Task {task_id} not found"},
     )
+
+@app.post("/tasks", status_code=201) # endpoint
+def create_task(task_data: dict): # receive request body which FastAPI parses the JSON to a Python dictionary and passes into task_data
+    title = task_data.get("title") # extract "title" key from task_data
+
+    if not isinstance(title, str) or not title.strip(): # if title isn't a string or empty string, return 400 error, we use not to reverse them from false to true 
+        return JSONResponse( # validation error
+            status_code=400,
+            content={"error": "Title must be a non-empty string"},
+        )
+
+    next_id = max((task["id"] for task in tasks), default=0) + 1 # find the highest id and add 1 to it, default is 0 if there are no tasks
+
+    new_task = {
+        "id": next_id,
+        "title": title.strip(),
+        "done": False,
+    }
+
+    tasks.append(new_task)
+    return new_task
+"""
+curl: sends an HTTP request.
+-i: displays response headers and body.
+-X POST: selects the POST method.
+URL: selects /tasks.
+\: continues the Git Bash command on the next line.
+-H: says the request body contains JSON.
+-d: provides the request body.
+"""
